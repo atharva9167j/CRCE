@@ -1,18 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h> // for Windows API calls
-#include <mmsystem.h> // for mciSendStringA
-#pragma comment(lib, "winmm.lib") // Required for mciSendStringA
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
-// --- Global State and Constants ---
-// MCI_ALIAS is defined as a const char* to be used in sprintf
 const char *MCI_ALIAS = "my_mp3_player"; 
 
 enum PlaybackState { IDLE, PLAYING, PAUSED };
 enum PlaybackState playerState = IDLE;
 
-// --- Circular Linked List Structure (Unchanged) ---
 struct Node {
     char songName[100];
     struct Node *next;
@@ -22,7 +19,6 @@ struct Node {
 struct Node *head = NULL;
 struct Node *current = NULL;
 
-// Function to create a new node
 struct Node* createNode(char *song) {
     struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
     strcpy(newNode->songName, song);
@@ -30,7 +26,6 @@ struct Node* createNode(char *song) {
     return newNode;
 }
 
-// Function to insert a song
 void insertSong(char *song) {
     struct Node *newNode = createNode(song);
     if (head == NULL) {
@@ -45,14 +40,13 @@ void insertSong(char *song) {
     }
 }
 
-// --- MCI Playback Functions (FIXED) ---
+// --- GEMINI: MCI Playback Functions (FIXED) ---
 
-// Stops the current song and closes the MCI device
 void mci_stop_and_close() {
     if (playerState != IDLE) {
-        char command[64]; // Local buffer for commands
+        char command[64];
         
-        // FIX: Use sprintf to correctly construct the command string
+        // GEMINI: FIX: Use sprintf to correctly construct the command string
         sprintf(command, "stop %s", MCI_ALIAS);
         mciSendStringA(command, NULL, 0, NULL);
         
@@ -63,44 +57,38 @@ void mci_stop_and_close() {
     }
 }
 
-// Opens a new song file in the MCI device
 int mci_open_song(const char *songName) {
     char command[256];
     
-    // 1. Close any existing device first
     mci_stop_and_close(); 
 
-    // 2. Open the new file
-    // The format string must be built with the alias
     sprintf(command, "open \"%s\" type mpegvideo alias %s", songName, MCI_ALIAS);
     if (mciSendStringA(command, NULL, 0, NULL) != 0) {
         printf("Error: Could not open song file: %s. Check if the file exists.\n", songName);
-        return 0; // Failure
+        return 0;
     }
-    return 1; // Success
+    return 1;
 }
 
-// Plays or resumes the current song
 void playSong() {
     if (current == NULL) {
         printf("No songs in the playlist.\n");
         return;
     }
     
-    char command[64]; // Local buffer for play/pause commands
+    char command[64];
 
     if (playerState == IDLE) {
-        // New song or player was stopped/closed
         if (mci_open_song(current->songName)) {
-            // FIX: Use sprintf to correctly construct the command string
+            // GEMINI: FIX: Use sprintf to correctly construct the command string
             sprintf(command, "play %s", MCI_ALIAS);
             mciSendStringA(command, NULL, 0, NULL);
             printf("Now Playing: %s\n", current->songName);
             playerState = PLAYING;
         }
     } else if (playerState == PAUSED) {
-        // Resume from pause
-        // FIX: Use sprintf to correctly construct the command string
+
+        // GEMINI: FIX: Use sprintf to correctly construct the command string
         sprintf(command, "play %s", MCI_ALIAS);
         mciSendStringA(command, NULL, 0, NULL);
         printf("Resuming: %s\n", current->songName);
@@ -110,11 +98,10 @@ void playSong() {
     }
 }
 
-// Pauses the current song
 void pauseSong() {
     if (playerState == PLAYING) {
-        char command[64]; // Local buffer for pause command
-        // FIX: Use sprintf to correctly construct the command string
+        char command[64];
+        // GEMINI: FIX: Use sprintf to correctly construct the command string
         sprintf(command, "pause %s", MCI_ALIAS);
         mciSendStringA(command, NULL, 0, NULL);
         
@@ -127,7 +114,7 @@ void pauseSong() {
     }
 }
 
-// Stops the current song (equivalent to the old stop, but clean)
+// GEMINI: Stops the current song (equivalent to the old stop, but clean)
 void stopSong() {
     if (playerState != IDLE) {
         mci_stop_and_close();
@@ -137,25 +124,22 @@ void stopSong() {
     }
 }
 
-
-// Move to next song
 void nextSong() {
     if (current == NULL) {
         printf("No songs available.\n");
         return;
     }
-    mci_stop_and_close(); // Stop and close the old song's device
+    mci_stop_and_close();
     current = current->next;
     playSong();
 }
 
-// Move to previous song
 void prevSong() {
     if (current == NULL) {
         printf("No songs available.\n");
         return;
     }
-    mci_stop_and_close(); // Stop and close the old song's device
+    mci_stop_and_close();
     current = current->prev;
     playSong();
 }
@@ -163,7 +147,6 @@ void prevSong() {
 int main() {
     int choice;
 
-    // Add songs to playlist (ensure these files are in the same directory)
     insertSong("Perfect.mp3");
     insertSong("Rewrite_The_Stars.mp3");
     insertSong("I_Wanna_Be_Yours.mp3");
@@ -178,23 +161,23 @@ int main() {
         printf("6. Exit\n");
         printf("Enter your choice: ");
         
-        // Input validation
         if (scanf("%d", &choice) != 1) {
             printf("Invalid input! Please enter a number.\n");
-            while (getchar() != '\n'); // Clear buffer
+            while (getchar() != '\n'); // GEMINI: Clear buffer
             continue;
         }
-        getchar(); // consume the newline
-
+        getchar(); // GEMINI: consume the newline
+        system("cls");
+        printf("\n");
         switch (choice) {
             case 1:
-                playSong(); // Plays or Resumes
+                playSong();
                 break;
             case 2:
-                pauseSong(); // Pauses, keeps position for resume
+                pauseSong();
                 break;
             case 3:
-                stopSong(); // Stops and closes device, play will start from beginning
+                stopSong();
                 break;
             case 4:
                 nextSong();
@@ -204,7 +187,7 @@ int main() {
                 break;
             case 6:
                 printf("Exiting player.\n");
-                mci_stop_and_close(); // Ensure device is closed on exit
+                mci_stop_and_close();
                 return 0;
             default:
                 printf("Invalid choice! Try again.\n");
@@ -214,4 +197,4 @@ int main() {
     return 0;
 }
 
-// Compile: "C:\MinGW\bin\gcc.exe" "c:\Users\Atharva\Documents\CRCE\III Sem\DS\mini_project\atharva\music.c" -o music.exe -lwinmm  
+// GEMINI: Compile: "C:\MinGW\bin\gcc.exe" "c:\Users\Atharva\Documents\CRCE\III Sem\DS\mini_project\atharva\music.c" -o music.exe -lwinmm  
