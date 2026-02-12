@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio — Atharva</title>
+</head>
+<body>
+
+<!-- Header with Navigation -->
+<header>
+    <h1>Portfolio – Atharva</h1>
+    <nav>
+        <a href="#about">About</a> |
+        <a href="#projects">Projects</a> |
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<!-- Section: About -->
+<section id="about">
+    <h2>About Me</h2>
+    <p>Hello, I am Atharva — a web developer passionate about building interactive experiences.</p>
+    <img src="https://atharva9167j.github.io/profile.png" alt="Atharva GitHub Avatar" width="200">
+</section>
+
+<!-- Section: Project List -->
+<section id="projects">
+    <h2>My Projects</h2>
+    <ul>
+        <li><a href="https://atharva9167j.github.io">Personal GitHub Pages</a></li>
+        <li>Interactive Web Games</li>
+        <li>Canvas Drawing Tools</li>
+    </ul>
+
+    <!-- Table of Skills -->
+    <table border="1">
+        <tr><th>Skill</th><th>Level</th></tr>
+        <tr><td>HTML5</td><td>Advanced</td></tr>
+        <tr><td>JavaScript</td><td>Intermediate</td></tr>
+        <tr><td>Web Security</td><td>Intermediate</td></tr>
+    </table>
+</section>
+
+<!-- Multimedia Features -->
+<section>
+    <h2>Audio & Video Demo</h2>
+    <audio controls>
+        <source src="sample-audio.mp3" type="audio/mpeg">
+        Your browser does not support audio.
+    </audio>
+    <br>
+    <video width="320" controls>
+        <source src="sample-video.mp4" type="video/mp4">
+        Your browser does not support video.
+    </video>
+</section>
+
+<!-- Canvas Drawing -->
+<section>
+    <h2>Canvas Demo</h2>
+    <canvas id="demoCanvas" width="300" height="150" style="border:1px solid black;">
+        Your browser does not support Canvas.
+    </canvas>
+    <script>
+        const c = document.getElementById("demoCanvas");
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#0099FF";
+        ctx.fillRect(20, 20, 200, 100);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "20px Arial";
+        ctx.fillText("Hello Canvas", 40, 80);
+    </script>
+</section>
+
+<!-- Drag & Drop -->
+<section>
+    <h2>Drag & Drop Demo</h2>
+    <p>Drag the box into the drop area:</p>
+    <div id="dragItem" draggable="true" style="width: 100px; height: 100px; background: orange;">
+        Drag Me
+    </div>
+    <div id="dropArea" style="width: 200px; height: 150px; border: 2px solid #000; margin-top: 10px;">
+        Drop Here
+    </div>
+    <script>
+        const dragItem = document.getElementById("dragItem");
+        const dropArea = document.getElementById("dropArea");
+
+        dragItem.addEventListener("dragstart", ev => {
+            ev.dataTransfer.setData("text", ev.target.id);
+        });
+        dropArea.addEventListener("dragover", ev => {
+            ev.preventDefault();
+        });
+        dropArea.addEventListener("drop", ev => {
+            ev.preventDefault();
+            const id = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(id));
+        });
+    </script>
+</section>
+
+<!-- Geolocation -->
+<section>
+    <h2>Geolocation</h2>
+    <button onclick="getLocation()">Get My Location</button>
+    <p id="locationText"></p>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => {
+                    document.getElementById("locationText").textContent =
+                        "Latitude: " + p.coords.latitude + ", Longitude: " + p.coords.longitude;
+                });
+            } else {
+                document.getElementById("locationText").textContent = "Geolocation not supported.";
+            }
+        }
+    </script>
+</section>
+
+<!-- Contact Form -->
+<section id="contact">
+    <h2>Contact Me</h2>
+    <form action="#" method="post">
+        <label>Name: <input type="text" name="name" required></label><br>
+        <label>Email: <input type="email" name="email" required></label><br>
+        <label>Message:<br>
+            <textarea name="message" rows="4" cols="30" required></textarea>
+        </label><br>
+        <input type="submit" value="Send">
+    </form>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2026 Atharva</p>
+</footer>
+
+</body>
+</html>
